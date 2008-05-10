@@ -22,7 +22,7 @@ ldopts=""
 prefix="c:/progra~1/LibPng"
 I_opts="-Ic:/progra~1/LibPng/include/libpng13"
 L_opts="-Lc:/progra~1/LibPng/lib"
-libs="-lpng13 -lz -lgw32c -liberty -lintl -liconv -lwsock32 -lole32 -luuid -lmsvcp60"
+libs="-lpng12 -lz -lgw32c -liberty -lintl -liconv -lwsock32 -lole32 -luuid -lmsvcp60"
 
 usage()
 {

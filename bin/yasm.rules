@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <VisualStudioToolFile
 	Name="YASM"
 	Version="8.00"
@@ -7,7 +7,7 @@
 		<CustomBuildRule
 			Name="YASM"
 			DisplayName="yasm"
-			CommandLine="yasm-0.7.0-win32.exe -f win32 -Xvc -o $(IntDir)/$(InputName).obj $(InputDir)/$(InputName).asm"
+			CommandLine="..\tools\bin\yasm-0.7.0-win32.exe -f win32 -Xvc -o $(IntDir)/$(InputName).obj $(InputDir)/$(InputName).asm"
 			Outputs="$(IntDir)/$(InputName).obj"
 			FileExtensions="*.asm"
 			>

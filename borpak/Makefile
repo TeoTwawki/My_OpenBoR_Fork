@@ -1,8 +1,6 @@
 #------------------------------------------------------------------------------
 #
-#               	OpenBOR Makefile for ALL Platforms 
-#
-#                      PSP, Dreamcast, GP2X, Windows & Linux
+#               	BOR Pak Makefile for Windows & Linux 
 #
 #------------------------------------------------------------------------------
 

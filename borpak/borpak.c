@@ -26,6 +26,7 @@
 #ifdef WIN32
     #include <direct.h>
     #include <windows.h>
+    #include "../../source/stristr.h"
 
     #define MKDIR(x)    mkdir(x)
     #define PATHSLASH   '\\'
@@ -42,7 +43,6 @@
 
 
 
-#define VER             "0.1"
 #define FNAMEMAX        1024
 
 #define FWRITE(X,Y,Z)   if(fwrite(X, Y, 1, Z) != 1) write_err();
@@ -97,10 +97,14 @@ int main(int argc, char *argv[]) {
     setbuf(stdout, NULL);
 
     fputs("\n"
-        "BOR PAK extractor/builder "VER"\n"
-        "by Luigi Auriemma\n"
+        "BOR PAK extractor/builder v0.1\n"
+        "originally by Luigi Auriemma\n"
         "e-mail: aluigi@autistici.org\n"
         "web:    aluigi.org\n"
+        "\n"
+        "Updated to v0.2 by SX\n"
+		"e-mail: sumolx@gmail.com\n"
+        "web:    www.lavalit.com\n"
         "\n", stdout);
 
     if(argc < 2) {
@@ -140,6 +144,7 @@ int main(int argc, char *argv[]) {
         }
 
         printf("- create file: %s\n", fname);
+        printf("- directory: %s\n\n", dir);
         fd = fopen(fname, "rb");
         if(fd) {
             fclose(fd);
@@ -150,9 +155,6 @@ int main(int argc, char *argv[]) {
         fd = fopen(fname, "wb");
         if(!fd) std_err();
 
-        printf("- change directory: %s\n", dir);
-        if(chdir(dir) < 0) std_err();
-
         FWRITE("PACK", 4, fd);
         fdwinum(fd, packver, 32);
 
@@ -160,7 +162,7 @@ int main(int argc, char *argv[]) {
             "    offset       size   filename\n"
             "--------------------------------\n");
 
-        if(recursive_dir(fd, ".") < 0) {
+        if(recursive_dir(fd, dir) < 0) {
             printf("\nError: an error occurred during the directory scanning\n");
             goto quit;
         }

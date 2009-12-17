@@ -8,6 +8,8 @@ CAT         = cat
 TOUCH       = touch
 1ST_READ    = /usr/local/dcdev/dcload/dcload-ip/target-src/1st_read/1st_read.bin
 IP_BIN      = /usr/local/dcdev/dcload/dcload-ip/make-cd/IP.BIN
+DISC_SIZE   = 650
+DATA_SIZE   = du -h -I ".svn" -I ".DS_Store" cd | sed -e 's/[a-z,A-Z]//g'
 
 all: burn-data
 
@@ -22,17 +24,21 @@ audio.raw:
 
 burn-audio: audio.raw
 	$(UNMOUNT)
-	$(CDRECORD) -v -speed=8 -tao -multi -audio audio.raw
+	$(CDRECORD) -v -driveropts=burnfree -tao -multi -audio audio.raw
 	touch burn-audio
 
-data.raw: 1st_read.bin IP.BIN burn-audio
+00DUMMY.DAT: 1st_read.bin IP.BIN burn-audio
+	@. dummy.sh $(DISC_SIZE)
+	
+data.raw: 00DUMMY.DAT
+	$(UNMOUNT)
 	$(MKISOFS) -l -r -C `$(CDRECORD) -msinfo` -exclude-list exclude.list -G IP.BIN -o data.raw cd/
 	touch burn-data
 
 burn-data: data.raw
 	$(UNMOUNT)
-	$(CDRECORD) -v -speed=8 -tao -multi -xa data.raw
+	$(CDRECORD) -v -driveropts=burnfree -tao -multi -xa data.raw
 
 .PHONY : clean
 clean:
-	rm -f cd/1st_read.bin IP.BIN audio.raw data.raw burn-audio burn-data
+	rm -f cd/1st_read.bin cd/00DUMMY.DAT IP.BIN audio.raw data.raw burn-audio burn-data

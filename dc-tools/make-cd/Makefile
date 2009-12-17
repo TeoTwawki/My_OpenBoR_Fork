@@ -26,7 +26,7 @@ burn-audio: audio.raw
 	touch burn-audio
 
 data.raw: 1st_read.bin IP.BIN burn-audio
-	$(MKISOFS) -l -r -C `$(CDRECORD) -msinfo` -G IP.BIN -o data.raw cd/
+	$(MKISOFS) -l -r -C `$(CDRECORD) -msinfo` -exclude-list exclude.list -G IP.BIN -o data.raw cd/
 	touch burn-data
 
 burn-data: data.raw

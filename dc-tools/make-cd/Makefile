@@ -11,7 +11,7 @@ IP_BIN      = /usr/local/dcdev/dcload/dcload-ip/make-cd/IP.BIN
 DISC_SIZE   = 700
 DATA_SIZE   = du -h -I ".svn" -I ".DS_Store" cd | sed -e 's/[a-z,A-Z]//g'
 
-all: burn-data
+all: clean burn-data
 
 1st_read.bin: $(1ST_READ)
 	$(SCRAMBLE) $(1ST_READ) cd/1st_read.bin

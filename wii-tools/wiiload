@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export WIILOAD=tcp:wii
+HOST=$(uname -s)
+
+if [ `echo $HOST | grep -o "Darwin"` ]; then
+  ./wiiload.darwin $1
+elif [ `echo $HOST | grep -o "Linux"` ]; then
+  ./wiiload.linux $1
+fi
+

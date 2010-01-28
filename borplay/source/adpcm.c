@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------
  * Licensed under the BSD license, see LICENSE in OpenBOR root for details.
  *
- * Copyright (c) 2004 - 2009 OpenBOR Team
+ * Copyright (c) 2004 - 2010 OpenBOR Team
  */
 
 /*
@@ -39,7 +39,7 @@ void adpcm_reset(){
 	state.valprev[1] = 0;
 	state.index[0] = 0;
 	state.index[1] = 0;
-}    
+}
 
 short adpcm_valprev(int channel)
 {
@@ -384,7 +384,7 @@ int adpcm_decode_stereo(unsigned char * indata, short * outdata, int len){
 	valpred[1] = state.valprev[1];
 	index[0] = state.index[0];
 	index[1] = state.index[1];
-	step[0] = stepsizeTable[index[0]];	
+	step[0] = stepsizeTable[index[0]];
 	step[1] = stepsizeTable[index[1]];
 
 	for ( bytesdecoded = 0 ; bytesdecoded < len; bytesdecoded++ ) {
@@ -475,13 +475,13 @@ int adpcm_decode_stereo(unsigned char * indata, short * outdata, int len){
 int adpcm_encode(short * indata, unsigned char * outdata, int len, int channels){
 	if ( channels == 2 ){
 		return adpcm_encode_stereo(indata, outdata, len);
-	} 
+	}
 	return adpcm_encode_mono(indata, outdata, len);
 }
 
 int adpcm_decode(unsigned char * indata, short * outdata, int len, int channels){
 	if ( channels == 2 ){
 		return adpcm_decode_stereo(indata, outdata, len);
-	} 
+	}
 	return adpcm_decode_mono(indata, outdata, len);
 }

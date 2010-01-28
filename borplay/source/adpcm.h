@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------
  * Licensed under the BSD license, see LICENSE in OpenBOR root for details.
  *
- * Copyright (c) 2004 - 2009 OpenBOR Team
+ * Copyright (c) 2004 - 2010 OpenBOR Team
  */
 
 #ifndef ADPCM_H

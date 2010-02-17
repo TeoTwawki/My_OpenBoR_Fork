@@ -112,12 +112,13 @@ int main(int argc, char *argv[]) {
 	setbuf(stderr, NULL);
 
 	fputs("\n"
-		"BOR music player "VER"\n"
+		"BOR music player v"VER"\n"
 		"v0.1 by Luigi Auriemma\n"
 		"e-mail: aluigi@autistici.org\n"
 		"web:    aluigi.org\n"
 		"v0.2-0.3 by Plombo\n"
 		"e-mail: plombex342@gmail.com\n"
+		"web:    lavalit.com\n"
 		"\n", stdout);
 
 	if(argc < 2) {
@@ -153,7 +154,7 @@ int main(int argc, char *argv[]) {
 			"\n");
 	if(!fread(pack, 4, 1, fd)) goto quit;
 	if(memcmp(pack, "PACK", 4)) {
-		borplay(fd, fname, 0, -1);
+		if(borplay(fd, fname, 0, -1) >= 0) count = 1;
 		goto quit;
 	}
 
@@ -164,7 +165,7 @@ int main(int argc, char *argv[]) {
 	
 	
 	if (!pbor)
-		printf("- Playing all music files in %s\n", argv[1]);
+		printf("- playing all music files in %s\n", argv[1]);
 	while((len = fread(&pn, 1, sizeof(pn), fd)) > 12) {
 		p = strrchr(pn.namebuf, '.');
 		
@@ -178,16 +179,13 @@ next:
 		off += pn.pns_len;
 		if(fseek(fd, off, SEEK_SET) < 0) std_err();
 	}
-	
-	if (!count) {
-		printf("- no matching files found\n");
-	}
 
 quit:
 	fclose(fd);
 	if(device) {
 		ao_shutdown();
 	}
+	if (count == 0) printf("- no matching files found\n");
 	printf("- finished\n");
 	return(0);
 }
@@ -235,8 +233,12 @@ int borplay(FILE *fd, char *fname, unsigned int off, unsigned int size) {
 		fname);
 	
 	// only print title and artist if at least one of them is specified
-	if (strlen(bh.artist) || strlen(bh.title))
-		printf("  \"%s\" - \"%s\"\n", bh.artist, bh.title);
+	if (strlen(bh.artist) && strlen(bh.title))
+		printf("  %s - %s\n", bh.artist, bh.title);
+	else if (strlen(bh.artist))
+		printf("  %s\n", bh.artist);
+	else if (strlen(bh.title))
+		printf("  %s\n", bh.title);
 
 	if(bh.datastart > sizeof(bh)) {
 		bh.datastart -= sizeof(bh);

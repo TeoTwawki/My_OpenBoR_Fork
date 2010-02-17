@@ -39,17 +39,17 @@
 
 
 
-#define VER     "0.2"
+#define VER     "0.3"
 
 #define MYFOPEN printf("- open file %s\n", fname);  \
 				fd = fopen(fname, "rb");            \
 				if(!fd)
 
-/** Borplay verison 0.2 - stereo support added by Plombo */
+/** Borplay verison 0.3 - stereo support added by Plombo */
 
-int borplay(FILE *fd, u_char *fname, u_int off, u_int size);
+int borplay(FILE *fd, char *fname, unsigned int off, unsigned int size);
 int check_kbhit(void);
-void aoinit(u_char *driver);
+void aoinit(unsigned char *driver);
 void aoinit_fmt(int channels, int frequency);
 void ao_error(char *device);
 void std_err(void);
@@ -62,20 +62,20 @@ void std_err(void);
 #define     MUSIC_BUF_SIZE      8192
 
 typedef struct {
-	u_int   pns_len;
-	u_int   filestart;
-	u_int   filesize;
-	char    namebuf[80];
+	unsigned int   pns_len;
+	unsigned int   filestart;
+	unsigned int   filesize;
+	char           namebuf[80];
 } pnamestruct;
 
 typedef struct {
-	char    identifier[16];
-	char    artist[64];
-	char    title[64];
-	u_int   version;
-	int     frequency;
-	int     channels;
-	int     datastart;
+	char    	 identifier[16];
+	char    	 artist[64];
+	char    	 title[64];
+	unsigned int version;
+	int     	 frequency;
+	int     	 channels;
+	int     	 datastart;
 } bor_header;
 
 
@@ -84,34 +84,28 @@ ao_device           *device = NULL;
 ao_sample_format    format;
 int                 ao_driver;  // not used, this tool is very simple
 
-// This method copied from original BOR source file PACKFILE.C
-// Convert slashes (UNIX) to backslashes (DOS).
-// Return a pointer to buffer with filename converted to DOS format.
-static char * slashback(char *sz){
-    int i=0;
-    static char new[256];
-
-    while(sz[i] && i<255){
-	new[i] = sz[i];
-	if(new[i]=='/') new[i]='\\';
-	++i;
-    }
-    new[i] = 0;
-
-    return new;
+// Convert slashes to backslashes, which are used in PAK files.
+static char * slashback(char *path){
+    static char newpath[1024];
+    int i;
+    
+    for (i=0; i<strlen(path); i++) {
+		if (path[i] == '/') newpath[i] = '\\';
+		else newpath[i] = path[i];
+	}
+	newpath[i] = 0;
+	
+	return newpath;
 }
 
 
 int main(int argc, char *argv[]) {
 	pnamestruct pn;
-	FILE    *fd;
-	u_int   off;
-	int     len;
-	int		count = 0;
-	u_char  pack[4],
-			*fname = NULL,
-			*pbor  = NULL,
-			*p;
+	FILE *fd;
+	unsigned int off;
+	int len;
+	int count = 0;
+	char pack[4], *fname = NULL, *pbor  = NULL, *p;
 
 	setbuf(stdin,  NULL);
 	setbuf(stdout, NULL);
@@ -122,7 +116,7 @@ int main(int argc, char *argv[]) {
 		"v0.1 by Luigi Auriemma\n"
 		"e-mail: aluigi@autistici.org\n"
 		"web:    aluigi.org\n"
-		"v0.2 by Plombo\n"
+		"v0.2-0.3 by Plombo\n"
 		"e-mail: plombex342@gmail.com\n"
 		"\n", stdout);
 
@@ -154,6 +148,7 @@ int main(int argc, char *argv[]) {
 
 	aoinit(NULL);
 	printf ("- press Ctrl+Z, Ctrl+D, Ctrl+C, Esc, 'x', or 'q' to exit\n"
+			"- press Space to pause or unpause\n"
 			"- press Tab or Enter to go to the next song\n"
 			"\n");
 	if(!fread(pack, 4, 1, fd)) goto quit;
@@ -175,8 +170,8 @@ int main(int argc, char *argv[]) {
 		
 		if((p && !stricmp(p, ".bor")) || (stristr(pn.namebuf, "music"))) {
 			if(pbor && !stristr(pn.namebuf, pbor)) goto next;
-			if(borplay(fd, pn.namebuf, pn.filestart, pn.filesize) < 0) break;
 			count++;
+			if(borplay(fd, pn.namebuf, pn.filestart, pn.filesize) < 0) break;
 		}
 
 next:
@@ -197,14 +192,12 @@ quit:
 	return(0);
 }
 
-int borplay(FILE *fd, u_char *fname, u_int off, u_int size) {
-	bor_header  bh;
-	int     len,
-			kb = 0;
-	short   *out;
-	char    *in, *p;
-	char	*artist;
-	char	*title;
+int borplay(FILE *fd, char *fname, unsigned int off, unsigned int size) {
+	bor_header bh;
+	int len, kb = 0;
+	short *out;
+	unsigned char *in;
+	char *p, *artist, *title;
 	
 
 	if(fseek(fd, off, SEEK_SET) < 0) std_err();
@@ -214,7 +207,7 @@ int borplay(FILE *fd, u_char *fname, u_int off, u_int size) {
 	if(strncmp(bh.identifier, BOR_IDENTIFIER, sizeof(bh.identifier))) return(0);
 
 	if((bh.version != BOR_MUSIC_VERSION) && (bh.version != NEW_MUSIC_VERSION)) {
-		printf("- alert: this file version could be not supported (%08x)\n", bh.version);
+		printf("- warning: unknown file version (%08x)\n", bh.version);
 	}
 	
 	// fix title
@@ -230,7 +223,7 @@ int borplay(FILE *fd, u_char *fname, u_int off, u_int size) {
 	// force mono if it's a v1 file
 	if ((bh.version == BOR_MUSIC_VERSION) && (bh.channels != 1))
 	{
-		printf("- alert: forcing mono playback because of file version; "
+		printf("- warning: forcing mono playback because of file version; "
 				"use the newest Wav2Bor from LavaLit.com to create BOR files "
 				"with more than 1 channel of audio\n");
 		bh.channels = 1;
@@ -253,7 +246,7 @@ int borplay(FILE *fd, u_char *fname, u_int off, u_int size) {
 
 	in = malloc(MUSIC_BUF_SIZE);
 	if(!in) std_err();
-	out = malloc(MUSIC_BUF_SIZE << 2);
+	out = malloc(MUSIC_BUF_SIZE * 4);
 	if(!out) std_err();
 
 	aoinit_fmt(bh.channels, bh.frequency);
@@ -268,7 +261,7 @@ int borplay(FILE *fd, u_char *fname, u_int off, u_int size) {
 		
 		adpcm_decode(in, out, len, bh.channels);
 		
-		if(!ao_play(device, (void *)out, len << 2)) break;
+		if(!ao_play(device, (void *)out, len * 4)) break;
 		
 		kb = check_kbhit();
 		if(kb) break;
@@ -308,7 +301,7 @@ int check_kbhit(void) {
 
 
 
-void aoinit(u_char *driver) {
+void aoinit(unsigned char *driver) {
 	printf("- initialize audio device\n");
 	ao_initialize();
 	if(driver) {
@@ -333,7 +326,7 @@ void aoinit_fmt(int channels, int frequency) {
 
 
 void ao_error(char *device) {
-	fprintf(stderr, "\nError: impossible to open the audio device %s\n", device);
+	fprintf(stderr, "\nError: can't open audio device %s\n", device);
 	exit(1);
 }
 

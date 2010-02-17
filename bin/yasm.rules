@@ -7,7 +7,7 @@
 		<CustomBuildRule
 			Name="YASM"
 			DisplayName="yasm"
-			CommandLine="..\tools\bin\yasm-0.7.0-win32.exe -f win32 -Xvc -o $(IntDir)/$(InputName).obj $(InputDir)/$(InputName).asm"
+			CommandLine="..\..\tools\bin\yasm.exe -f win32 -Xvc -o $(IntDir)/$(InputName).obj $(InputDir)/$(InputName).asm"
 			Outputs="$(IntDir)/$(InputName).obj"
 			FileExtensions="*.asm"
 			>

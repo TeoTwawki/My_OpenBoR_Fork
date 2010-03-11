@@ -26,17 +26,18 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "stristr.h"
 
 #ifdef WIN32
 	#include <direct.h>
 	#include <windows.h>
+	#include "stristr.h"
 
 	#define MKDIR(x)    mkdir(x)
 	#define PATHSLASH   '\\'
 #else
 	#include <unistd.h>
 	
+	#define stristr		strcasestr
 	#define MKDIR(x)    mkdir(x, 0755)
 	#define PATHSLASH   '/'
 #endif
@@ -48,11 +49,11 @@
 
 
 
-int put_file(FILE *fd, u_char *fname);
-void get_file(FILE *fd, u_char *fname, u_int off, u_int size);
+int put_file(FILE *fd, char *fname);
+void get_file(FILE *fd, char *fname, u_int off, u_int size);
 u_int fdrinum(FILE *fd, int size);
 void fdwinum(FILE *fd, u_int num, int size);
-int recursive_dir(FILE *fd, u_char *filedir);
+int recursive_dir(FILE *fd, char *filedir);
 void write_err(void);
 void std_err(void);
 
@@ -87,7 +88,7 @@ int main(int argc, char *argv[]) {
 			build   = 0,
 			packver = 0,
 			filez   = 0;
-	u_char  pack[4],
+	char  pack[4],
 			*dir    = NULL,
 			*patt   = NULL,
 			*fname;
@@ -240,14 +241,14 @@ quit:
 
 
 
-int put_file(FILE *fd, u_char *fname) {
+int put_file(FILE *fd, char *fname) {
 	struct  pnp_t   *ps;
 	FILE    *fdi;
 	int     len;
 	u_int   off,
 			size;
-	u_char  buff[8192],
-			*p;
+	u_char  buff[8192];
+	char	*p;
 
 	// printf("  %s\r", fname);
 	fdi = fopen(fname, "rb");
@@ -299,12 +300,12 @@ int put_file(FILE *fd, u_char *fname) {
 
 
 
-void get_file(FILE *fd, u_char *fname, u_int off, u_int size) {
+void get_file(FILE *fd, char *fname, u_int off, u_int size) {
 	FILE    *fdo;
 	int     rlen,
 			len;
-	u_char  buff[8192],
-			*p;
+	u_char  buff[8192];
+	char	*p;
 
 	if(fseek(fd, off, SEEK_SET) < 0) std_err();
 
@@ -313,7 +314,7 @@ void get_file(FILE *fd, u_char *fname, u_int off, u_int size) {
 			*p = 0;
 			MKDIR(fname);
 			*p = PATHSLASH;
-		} else { // this "else" block added by Bryan
+		} else {
 			*p = tolower(*p);
 		}
 	}
@@ -359,15 +360,15 @@ void fdwinum(FILE *fd, u_int num, int size) {
 	FWRITE(tmp, size, fd);
 }
 
-int recursive_dir(FILE *fd, u_char *filedir) {
-	u_char  tcDir[FNAMEMAX];
+int recursive_dir(FILE *fd, char *filedir) {
+	char  tcDir[FNAMEMAX];
 	
 	struct  stat    xstat;
 	struct  dirent  **namelist;
 	int             n,
 					i;
 
-	n = scandir(filedir, &namelist, NULL, NULL);
+	n = scandir(filedir, &namelist, NULL, alphasort);
 	if(n < 0) {
 		if(stat(filedir, &xstat) < 0) {
 			printf("**** %s", filedir);
@@ -405,14 +406,12 @@ quit:
 	}
 	free(namelist);
 	return(-1);
-
-//~ #endif
 }
 
 
 
 void write_err(void) {
-	printf("\nError: write error, probably the disk space is finished\n\n");
+	printf("\nError: write error; probably out of disk space\n\n");
 	exit(1);
 }
 

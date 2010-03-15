@@ -30,7 +30,7 @@ mkdir -p /tmp/debpackage/usr/share/applications/
 mkdir -p /tmp/debpackage/usr/share/pixmaps/
 
 mv control /tmp/debpackage/DEBIAN/
-mv OpenBOR /tmp/debpackage/usr/games/
+mv openbor /tmp/debpackage/usr/games/
 mv openbor.desktop /tmp/debpackage/usr/share/applications/
 mv openbor.xpm /tmp/debpackage/usr/share/pixmaps/
 }

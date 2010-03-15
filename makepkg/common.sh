@@ -34,9 +34,9 @@ Comment=Ultimate 2D Game Engine
 Terminal=false
 Type=Application
 Categories=Game;
-Icon=openbor" >> ./openbor.desktop
+Icon=openbor" >> openbor.desktop
 cp ../../resources/OpenBOR_Icon_128x128.h ./openbor.xpm
-cp ../../releases/LINUX/OpenBOR/OpenBOR ./OpenBOR
+cp ../../releases/LINUX/OpenBOR/OpenBOR ./openbor
 }
 
 check_files

@@ -259,9 +259,9 @@ int put_file(FILE *fd, char *fname) {
 	for(p = fname; *p; p++) {           // WIN mode
 		if(*p == '/') {
 			*p = '\\';
-		} else {
+		} /*else {
 			*p = toupper(*p);
-		}
+		} */
 	}
 
 	// fflush(fd);

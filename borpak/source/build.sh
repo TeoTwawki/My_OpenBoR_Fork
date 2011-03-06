@@ -9,12 +9,15 @@ if [ `echo $PLATFORM | grep -o "win"` ]; then
   SOURCE="scandir.c "
 fi
 
-if [ `echo $PLATFORM | grep -o "mac"` ]; then
+if [ `echo $PLATFORM | grep -o "macwin"` ]; then
+  CC="i386-mingw32-"
+  PATH="$PATH:/usr/local/i386-mingw32-4.3.0/bin"
+elif [ `echo $PLATFORM | grep -o "mac"` ]; then
   CFLAGS+="-arch x86_64 -arch i386 -arch ppc"
 fi
 
 TARGET="borpak"
-CC="gcc"
+CC+="gcc"
 SOURCE+="borpak.c stristr.c"
 
 $CC $CFLAGS -o $TARGET$EXTENSION $SOURCE

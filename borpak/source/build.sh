@@ -25,7 +25,9 @@ fi
 
 TARGET="borpak"
 CC=${CC}"gcc"
+RM="rm -rf"
 SOURCE="$SOURCE borpak.c stristr.c"
 
+$RM $TARGET$EXTENSION *.o
 $CC $CFLAGS -o $TARGET$EXTENSION $SOURCE
 

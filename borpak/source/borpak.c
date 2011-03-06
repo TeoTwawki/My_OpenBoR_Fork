@@ -31,6 +31,7 @@
 	#include <direct.h>
 	#include <windows.h>
 	#include "stristr.h"
+	#include "scandir.h"
 
 	#define MKDIR(x)    mkdir(x)
 	#define PATHSLASH   '\\'

@@ -16,9 +16,13 @@ elif [ `echo $PLATFORM | grep -o "mac"` ]; then
   CFLAGS+="-arch x86_64 -arch i386 -arch ppc"
 fi
 
+if [ `echo $PLATFORM | grep -o "linwin"` ]; then
+  CC="i586-mingw32msvc-"
+fi
+
 TARGET="borpak"
-CC+="gcc"
-SOURCE+="borpak.c stristr.c"
+CC=${CC}"gcc"
+SOURCE="$SOURCE borpak.c stristr.c"
 
 $CC $CFLAGS -o $TARGET$EXTENSION $SOURCE
 

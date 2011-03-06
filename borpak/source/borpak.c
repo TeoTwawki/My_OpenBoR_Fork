@@ -48,7 +48,7 @@
 #define FWRITE(X,Y,Z)   if(fwrite(X, Y, 1, Z) != 1) write_err();
 
 
-
+int filename_valid(const char* fname);
 int put_file(FILE *fd, char *fname);
 void get_file(FILE *fd, char *fname, u_int off, u_int size);
 u_int fdrinum(FILE *fd, int size);
@@ -389,6 +389,10 @@ int recursive_dir(FILE *fd, char *filedir) {
 				printf("**** %s", tcDir);
 				std_err();
 			}
+			if(!filename_valid(namelist[i]->d_name)) {
+				printf("ERROR: invalid filename %s, stopping!\nwe allow only A-Z,a-z,0-9,-_. in filenames to prevent mod breakage!\n", namelist[i]->d_name);
+				exit(1);
+			}
 			if(S_ISDIR(xstat.st_mode)) {
 				if(recursive_dir(fd, tcDir) < 0) goto quit;
 			} else {
@@ -420,4 +424,28 @@ void write_err(void) {
 void std_err(void) {
 	perror("\nError");
 	exit(1);
+}
+
+// only allow A-Za-z0-9\/.-_ in filenames, to prevent breakage of mods after packing.
+int filename_valid(const char* fname) {
+	char* tmp = (char*)fname;
+	if(!tmp || !*tmp) return 0;
+	while(*tmp) {
+		switch(*tmp) {
+			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
+			case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
+			case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
+			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
+			case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
+			case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':	
+			case '\\': case '/': case '.': case '-': case '_':
+			case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7':	
+			case '8': case '9': 
+				tmp++;
+				break;
+			default:
+				return 0;
+		}
+	}
+	return 1;	
 }

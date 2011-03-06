@@ -12,6 +12,9 @@ fi
 if [ `echo $PLATFORM | grep -o "macwin"` ]; then
   CC="i386-mingw32-"
   PATH="$PATH:/usr/local/i386-mingw32-4.3.0/bin"
+elif [ `echo $PLATFORM | grep -o "maclin"` ]; then
+  CC="i386-linux-"
+  PATH="$PATH:/usr/local/i386-linux-4.1.1/bin"
 elif [ `echo $PLATFORM | grep -o "mac"` ]; then
   CFLAGS+="-arch x86_64 -arch i386 -arch ppc"
 fi

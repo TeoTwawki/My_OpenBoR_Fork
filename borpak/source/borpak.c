@@ -1,6 +1,6 @@
 /*
 	Copyright 2006 Luigi Auriemma
-	Copyright 2009 Bryan Cain
+	Copyright 2009-2011 Bryan Cain
 
 	This program is free software; you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by

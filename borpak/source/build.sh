@@ -13,28 +13,28 @@ if [ $# -ne 1 ]; then
 fi
 
 # Target is Windows
-if [ `echo $TARGET_PLATFORM | grep -o "win"` ]; then
+if [ `echo $TARGET_PLATFORM | grep "win"` ]; then
   EXTENSION=".exe"
   SOURCE="scandir.c "
-  if [ `echo $HOST_PLATFORM | grep -o "Darwin"` ]; then
+  if [ `echo $HOST_PLATFORM | grep "Darwin"` ]; then
     CC="i386-mingw32-"
     PATH="$PATH:/usr/local/i386-mingw32-4.3.0/bin"
-  elif [ `echo $HOST_PLATFORM | grep -o "Linux"` ]; then
+  elif [ `echo $HOST_PLATFORM | grep "Linux"` ]; then
     CC="i586-mingw32msvc-"
   fi
 fi
 
 # Target is Linux
-if [ `echo $TARGET_PLATFORM | grep -o "lin"` ]; then
-  if [ `echo $HOST_PLATFORM | grep -o "Darwin"` ]; then
+if [ `echo $TARGET_PLATFORM | grep "lin"` ]; then
+  if [ `echo $HOST_PLATFORM | grep "Darwin"` ]; then
     CC="i386-linux-"
     PATH="$PATH:/usr/local/i386-linux-4.1.1/bin"
   fi
 fi
 
 # Target is Mac OS X
-if [ `echo $TARGET_PLATFORM | grep -o "mac"` ]; then
-  if [ `echo $HOST_PLATFORM | grep -o "Darwin"` ]; then
+if [ `echo $TARGET_PLATFORM | grep "mac"` ]; then
+  if [ `echo $HOST_PLATFORM | grep "Darwin"` ]; then
     CFLAGS+="-arch x86_64 -arch i386 -arch ppc"
   fi
 fi

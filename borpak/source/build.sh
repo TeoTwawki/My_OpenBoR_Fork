@@ -4,6 +4,10 @@
 
 TARGET_PLATFORM=$1
 HOST_PLATFORM=$(uname -s)
+EXTENSION=
+SOURCE=
+PREFIX=
+CFLAGS=
 
 if [ $# -ne 1 ]; then
   echo "Usage: '`basename $0` mac' == Mac OS X"
@@ -17,17 +21,18 @@ if [ `echo $TARGET_PLATFORM | grep "win"` ]; then
   EXTENSION=".exe"
   SOURCE="scandir.c "
   if [ `echo $HOST_PLATFORM | grep "Darwin"` ]; then
-    CC="i386-mingw32-"
+    PREFIX="i386-mingw32-"
     PATH="$PATH:/usr/local/i386-mingw32-4.3.0/bin"
   elif [ `echo $HOST_PLATFORM | grep "Linux"` ]; then
-    CC="i586-mingw32msvc-"
+    PREFIX="i586-mingw32msvc-"
+    PATH="$PATH:/usr/i586-mingw32msvc/bin"
   fi
 fi
 
 # Target is Linux
 if [ `echo $TARGET_PLATFORM | grep "lin"` ]; then
   if [ `echo $HOST_PLATFORM | grep "Darwin"` ]; then
-    CC="i386-linux-"
+    PREFIX="i386-linux-"
     PATH="$PATH:/usr/local/i386-linux-4.1.1/bin"
   fi
 fi
@@ -40,7 +45,7 @@ if [ `echo $TARGET_PLATFORM | grep "mac"` ]; then
 fi
 
 TARGET="borpak"
-CC=${CC}"gcc"
+CC=${PREFIX}gcc
 RM="rm -rf"
 SOURCE="$SOURCE borpak.c stristr.c"
 

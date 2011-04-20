@@ -37,7 +37,7 @@
 	#define PATHSLASH   '\\'
 #else
 	#include <unistd.h>
-	
+
 	#define stristr		strcasestr
 	#define MKDIR(x)    mkdir(x, 0755)
 	#define PATHSLASH   '/'
@@ -109,7 +109,7 @@ int main(int argc, char *argv[]) {
 		"Updated to v0.3 by Plombo\n"
 		"web:    http://lavalit.com:8080/\n"
 		"\n", stdout);
-	
+
 	if(argc < 2) {
 		printf("\n"
 			"Usage: %s [options] <file.PAK>\n"
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 			"\n", argv[0]);
 		exit(1);
 	}
-	
+
 	argc--;
 	for(i = 1; i < argc; i++) {
 		if(argv[i][0] != '-') break;
@@ -137,7 +137,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	fname = argv[argc];
-	
+
 	if(build) {
 		if(!dir) {
 			printf("\n"
@@ -363,7 +363,7 @@ void fdwinum(FILE *fd, u_int num, int size) {
 
 int recursive_dir(FILE *fd, char *filedir) {
 	char  tcDir[FNAMEMAX];
-	
+
 	struct  stat    xstat;
 	struct  dirent  **namelist;
 	int             n,
@@ -379,7 +379,7 @@ int recursive_dir(FILE *fd, char *filedir) {
 	} else {
 		for(i = 0; i < n; i++) {    // Changed by Plombo
 			if(!strcmp(namelist[i]->d_name, ".") || !strcmp(namelist[i]->d_name, "..")) continue;
-			
+
 			sprintf(
 				tcDir ,
 				"%s/%s",
@@ -433,20 +433,19 @@ int filename_valid(const char* fname) {
 	if(!tmp || !*tmp) return 0;
 	while(*tmp) {
 		switch(*tmp) {
-			case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G': case 'H': case 'I':
-			case 'J': case 'K': case 'L': case 'M': case 'N': case 'O': case 'P': case 'Q': case 'R':
-			case 'S': case 'T': case 'U': case 'V': case 'W': case 'X': case 'Y': case 'Z':
-			case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g': case 'h': case 'i':
-			case 'j': case 'k': case 'l': case 'm': case 'n': case 'o': case 'p': case 'q': case 'r':
-			case 's': case 't': case 'u': case 'v': case 'w': case 'x': case 'y': case 'z':	
-			case '\\': case '/': case '.': case '-': case '_':
-			case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7':	
-			case '8': case '9': 
+			case 'A':  case 'B':  case 'C':  case 'D':  case 'E':  case 'F':  case 'G':  case 'H': case 'I':  case 'J':
+			case 'K':  case 'L':  case 'M':  case 'N':  case 'O':  case 'P':  case 'Q':  case 'R': case 'S':  case 'T':
+			case 'U':  case 'V':  case 'W':  case 'X':  case 'Y':  case 'Z':
+			case 'a':  case 'b':  case 'c':  case 'd':  case 'e':  case 'f':  case 'g':  case 'h': case 'i':  case 'j':
+			case 'k':  case 'l':  case 'm':  case 'n':  case 'o':  case 'p':  case 'q':  case 'r': case 's':  case 't':
+			case 'u':  case 'v':  case 'w':  case 'x':  case 'y':  case 'z':
+			case '0':  case '1':  case '2':  case '3':  case '4':  case '5':  case '6':  case '7': case '8':  case '9':
+			case '\\': case '/':  case '.':  case '-':  case '_':  case '~':  case ' ':
 				tmp++;
 				break;
 			default:
 				return 0;
 		}
 	}
-	return 1;	
+	return 1;
 }

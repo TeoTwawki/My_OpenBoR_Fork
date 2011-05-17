@@ -57,6 +57,7 @@ void fdwinum(FILE *fd, u_int num, int size);
 int recursive_dir(FILE *fd, char *filedir);
 void write_err(void);
 void std_err(void);
+void winpause(void);
 
 
 typedef struct {
@@ -89,12 +90,16 @@ int main(int argc, char *argv[]) {
 			build   = 0,
 			packver = 0,
 			filez   = 0;
-	char  pack[4],
+	char	pack[4],
+			curdir[512],
 			*dir    = NULL,
 			*patt   = NULL,
 			*fname;
 
 	setbuf(stdout, NULL);
+#ifdef WIN32
+	atexit(winpause);
+#endif
 
 	fputs("\n"
 		"BOR PAK extractor/builder v0.1\n"
@@ -237,7 +242,9 @@ int main(int argc, char *argv[]) {
 quit:
 	fclose(fd);
 	printf("- finished: %d files\n", filez);
-	return(0);
+	printf("- current directory: %s\n", getcwd(curdir, sizeof(curdir)));
+	
+	return 0;
 }
 
 
@@ -425,6 +432,10 @@ void write_err(void) {
 void std_err(void) {
 	perror("\nError");
 	exit(1);
+}
+
+void winpause(void) {
+	system("pause");
 }
 
 // only allow A-Za-z0-9\/.-_ in filenames, to prevent breakage of mods after packing.
